@@ -1,0 +1,1 @@
+autorest --csharp --input-file=invoiceninja-invoiceninja-1.9.0-swagger.yaml --output-folder=InvoiceNinja --namespace=InvoiceNinjaClient --add-credentials --v3

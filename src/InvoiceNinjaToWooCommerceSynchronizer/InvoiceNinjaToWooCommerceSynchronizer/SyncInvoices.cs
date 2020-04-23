@@ -1,7 +1,9 @@
 using System;
+using InvoiceNinjaClient;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
+using Microsoft.Rest;
 
 namespace InvoiceNinjaToWooCommerceSynchronizer
 {
@@ -11,6 +13,9 @@ namespace InvoiceNinjaToWooCommerceSynchronizer
         public static void Run([TimerTrigger("0 */5 * * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
+
+            var invoiceNinjaClient = new InvoiceNinja(null);
+            invoiceNinjaClient.GetInvoices();
         }
     }
 }

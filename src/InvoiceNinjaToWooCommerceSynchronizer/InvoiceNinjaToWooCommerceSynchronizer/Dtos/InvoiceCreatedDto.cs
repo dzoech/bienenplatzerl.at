@@ -136,7 +136,7 @@ namespace InvoiceNinjaToWooCommerceSynchronizer.Dtos
         public int updated_at { get; set; }
         public object archived_at { get; set; }
         public string notes { get; set; }
-        public int cost { get; set; }
+        public decimal cost { get; set; }
         public int qty { get; set; }
         public string tax_name1 { get; set; }
         public int tax_rate1 { get; set; }

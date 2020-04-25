@@ -14,6 +14,8 @@ namespace InvoiceNinjaToWooCommerceSynchronizer
 {
     public static class InvoiceCreated
     {
+        // TODO: InvoiceUpdated
+
         [FunctionName("InvoiceCreated")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
@@ -23,18 +25,18 @@ namespace InvoiceNinjaToWooCommerceSynchronizer
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var invoiceData = JsonConvert.DeserializeObject<InvoiceCreatedDto>(requestBody);
-            
-            
-            var stockReductions = invoiceData.invoice_items.Select(i => 
+ 
+
+            var purchasedItems = invoiceData.invoice_items.Select(i => 
                 new { 
-                    ArticelId = i.id, 
-                    ProductKey = i.product_key, 
+                    ArticleId = int.Parse(i.custom_value2), 
+                    ProductName = i.product_key, 
                     Quantity = i.qty 
                 });
 
-            foreach (var r in stockReductions)
+            foreach (var item in purchasedItems)
             {
-                logger.LogInformation($"Stock Reduction: {r}");
+                logger.LogInformation($"Stock Reduction: {item}");
             }
 
             return new OkObjectResult("Success");

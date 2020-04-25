@@ -14,7 +14,8 @@ namespace InvoiceNinjaToWooCommerceSynchronizer
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
-            var invoiceNinjaClient = new InvoiceNinja(null);
+            var cred = new InvoiceNinjaAuthentication();
+            var invoiceNinjaClient = new InvoiceNinja(cred);
             invoiceNinjaClient.GetInvoices();
         }
     }

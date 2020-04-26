@@ -1,6 +1,8 @@
 using InvoiceNinjaToWooCommerceSynchronizer;
+using InvoiceNinjaToWooCommerceSynchronizer.WooCommerce;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -35,7 +37,13 @@ namespace InvoiceNinjaToWooCommerceSynchronizerTests
 
             var logger = new UnitTestLogger();
             var request = SetupHttpRequest(null, jsonString);
-            InvoiceCreated.Run(request, logger);
+
+            var repo = new Mock<IProductRepository>();
+
+            // TODO mock Repository methods
+
+            var func = new InvoiceCreated(repo.Object);
+            func.Run(request, logger);
         }
     }
 }

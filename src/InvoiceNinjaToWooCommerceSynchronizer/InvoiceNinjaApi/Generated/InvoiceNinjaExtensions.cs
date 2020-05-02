@@ -15,7 +15,7 @@ namespace InvoiceNinjaClient
 
     /// <summary>
     /// Extension methods for InvoiceNinja.
-    /// </summary>
+    /// </summary>git
     public static partial class InvoiceNinjaExtensions
     {
             /// <summary>

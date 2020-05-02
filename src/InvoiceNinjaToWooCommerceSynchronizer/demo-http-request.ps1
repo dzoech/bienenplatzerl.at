@@ -1,0 +1,1 @@
+iwr -method post -uri "http://localhost:7071/api/InvoiceCreated" -body (cat ./InvoiceNinjaToWooCommerceSynchronizerTests/TestWebhookData/demo-invoice-created.json)

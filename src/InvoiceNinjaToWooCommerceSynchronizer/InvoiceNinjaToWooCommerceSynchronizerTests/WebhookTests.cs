@@ -42,8 +42,8 @@ namespace InvoiceNinjaToWooCommerceSynchronizerTests
 
             // TODO mock Repository methods
 
-            var func = new InvoiceCreated(repo.Object);
-            func.Run(request, logger);
+            var func = new InvoiceWebhooks(repo.Object);
+            func.InvoiceCreated(request, logger);
         }
     }
 }

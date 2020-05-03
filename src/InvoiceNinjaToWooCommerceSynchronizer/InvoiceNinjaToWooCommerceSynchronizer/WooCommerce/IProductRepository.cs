@@ -6,6 +6,6 @@ namespace InvoiceNinjaToWooCommerceSynchronizer.WooCommerce
     public interface IProductRepository
     {
         Task<Product> GetBySkuAsync(int id);
-        Task DecreaseStockQuantity(int sku, int decreaseBy = 1);
+        Task AdjustStockQuantity(int sku, int quantityAdjustment = -1);
     }
 }

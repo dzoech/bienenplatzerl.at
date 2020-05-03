@@ -4,7 +4,7 @@ using System.Text;
 
 namespace InvoiceNinjaToWooCommerceSynchronizer.Dtos
 {
-    public class InvoiceCreatedDto
+    public class InvoiceEventDto
     {
         public string account_key { get; set; }
         public bool is_owner { get; set; }

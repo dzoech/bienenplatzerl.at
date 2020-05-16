@@ -13,6 +13,7 @@ using InvoiceNinjaToWooCommerceSynchronizer.WooCommerce;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
+using System.Web.Http;
 
 namespace InvoiceNinjaToWooCommerceSynchronizer
 {
@@ -29,26 +30,37 @@ namespace InvoiceNinjaToWooCommerceSynchronizer
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest request,
             ILogger logger)
         {
-            logger.LogInformation($"{nameof(InvoiceCreated)} triggered function triggered.");
-            var purchasedItems = await ExtractInvoiceItems(request);
-
-            foreach (var item in purchasedItems)
+            try
             {
-                logger.LogInformation($"Stock reduction for item '{item}'");
+                logger.LogInformation($"{nameof(InvoiceCreated)} function triggered.");
+                var purchasedItems = await ExtractInvoiceItems(request);
 
-                try
+                foreach (var item in purchasedItems)
                 {
-                    await productRepository.AdjustStockQuantity(item.ArticleId, quantityAdjustment: -item.Quantity);
+                    logger.LogInformation($"Stock reduction for item '{item}'");
+
+                    try
+                    {
+                        await productRepository
+                            .AdjustStockQuantity(
+                                item.ArticleId, 
+                                quantityAdjustment: -item.Quantity);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, $"Failed to decrease stock in WooCommerce for product {item}.");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    logger.LogError(
-                        ex,
-                        $"Failed to decrease stock in WooCommerce for product {item}.");
-                }
+
+                return new OkObjectResult("Success");
             }
+            catch (Exception ex)
+            {
+                var requestBody = await ReadRequestBodyToString(request);
+                logger.LogError(ex, $"Request body for failed function execution:{Environment.NewLine}{requestBody}");
 
-            return new OkObjectResult("Success");
+                return new InternalServerErrorResult();
+            }
         }
 
 
@@ -57,26 +69,37 @@ namespace InvoiceNinjaToWooCommerceSynchronizer
                     [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest request,
                     ILogger logger)
         {
-            logger.LogInformation($"{nameof(InvoiceDeleted)} triggered function triggered.");
-            var purchasedItems = await ExtractInvoiceItems(request);
-
-            foreach (var item in purchasedItems)
+            try
             {
-                logger.LogInformation($"Stock increase for item '{item}'");
+                logger.LogInformation($"{nameof(InvoiceDeleted)} triggered function triggered.");
+                var purchasedItems = await ExtractInvoiceItems(request);
 
-                try
+                foreach (var item in purchasedItems)
                 {
-                    await productRepository.AdjustStockQuantity(item.ArticleId, quantityAdjustment: +item.Quantity);
+                    logger.LogInformation($"Stock increase for item '{item}'");
+
+                    try
+                    {
+                        await productRepository
+                            .AdjustStockQuantity(
+                                item.ArticleId,
+                                quantityAdjustment: +item.Quantity);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, $"Failed to increase stock in WooCommerce for product {item}.");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    logger.LogError(
-                        ex,
-                        $"Failed to increase stock in WooCommerce for product {item}.");
-                }
+
+                return new OkObjectResult("Success");
             }
+            catch (Exception ex)
+            {
+                var requestBody = await ReadRequestBodyToString(request);
+                logger.LogError(ex, $"Request body for failed function execution:{Environment.NewLine}{requestBody}");
 
-            return new OkObjectResult("Success");
+                return new InternalServerErrorResult();
+            }
         }
 
         // TODO: Update
@@ -85,13 +108,19 @@ namespace InvoiceNinjaToWooCommerceSynchronizer
 
         private async Task<IEnumerable<InvoiceItem>> ExtractInvoiceItems(HttpRequest request)
         {
-            string requestBody = await new StreamReader(request.Body).ReadToEndAsync();
+            string requestBody = await ReadRequestBodyToString(request);
             var invoiceData = JsonConvert.DeserializeObject<InvoiceEventDto>(requestBody);
 
             var purchasedItems = invoiceData.invoice_items.Select(i =>
                 InvoiceItem.Create(i.custom_value2, i.product_key, i.qty));
 
             return purchasedItems;
+        }
+
+        private async Task<string> ReadRequestBodyToString(HttpRequest request)
+        {
+            request.Body.Position = 0;
+            return await new StreamReader(request.Body).ReadToEndAsync();
         }
     }
 }

@@ -43,7 +43,7 @@ namespace InvoiceNinjaToWooCommerceSynchronizer.WooCommerce
 
         public override string ToString()
         {
-            return $"{ProductName} ({nameof(ArticleId)}: '{ArticleId}', {nameof(Quantity)}: '{Quantity}'";
+            return $"{ProductName} ({nameof(ArticleId)}: '{ArticleId}', {nameof(Quantity)}: '{Quantity}')";
         }
     }
 }

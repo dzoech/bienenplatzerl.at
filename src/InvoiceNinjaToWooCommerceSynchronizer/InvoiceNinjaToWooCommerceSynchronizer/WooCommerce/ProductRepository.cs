@@ -18,8 +18,8 @@ namespace InvoiceNinjaToWooCommerceSynchronizer.WooCommerce
 
         public ProductRepository(WCObject wooClient, ILogger logger)
         {
-            this.wooClient = wooClient;
-            this.logger = logger;
+            this.wooClient = wooClient ?? throw new ArgumentNullException(nameof(wooClient));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<Product> GetBySkuAsync(int sku)

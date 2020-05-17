@@ -14,7 +14,7 @@ namespace InvoiceNinjaToWooCommerceSynchronizer.WooCommerce
 
         public static InvoiceItem Create(string sku, string productKey, int quantity)
         {
-            if (productKey == sku)
+            if (sku == null)
             {
                 throw new ArgumentNullException($"{nameof(sku)}");
             }

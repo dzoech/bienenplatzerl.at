@@ -22,7 +22,7 @@ namespace InvoiceNinjaToWooCommerceSynchronizer
         private readonly IProductRepository productRepository;
         public InvoiceWebhooks(IProductRepository productRepository)
         {
-            this.productRepository = productRepository;
+            this.productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
         [FunctionName("InvoiceCreated")]

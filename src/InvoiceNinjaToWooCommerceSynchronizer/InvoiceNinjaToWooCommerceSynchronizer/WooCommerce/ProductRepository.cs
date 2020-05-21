@@ -14,9 +14,9 @@ namespace InvoiceNinjaToWooCommerceSynchronizer.WooCommerce
     class ProductRepository : IProductRepository
     {
         private readonly WCObject wooClient;
-        private readonly ILogger logger;
+        private readonly ILogger<ProductRepository> logger;
 
-        public ProductRepository(WCObject wooClient, ILogger logger)
+        public ProductRepository(WCObject wooClient, ILogger<ProductRepository> logger)
         {
             this.wooClient = wooClient ?? throw new ArgumentNullException(nameof(wooClient));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));

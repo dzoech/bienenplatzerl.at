@@ -49,6 +49,7 @@ namespace InvoiceNinjaToWooCommerceSynchronizer
                     catch (Exception ex)
                     {
                         logger.LogError(ex, $"Failed to decrease stock in WooCommerce for product {item}.");
+                        throw;
                     }
                 }
 
@@ -88,6 +89,7 @@ namespace InvoiceNinjaToWooCommerceSynchronizer
                     catch (Exception ex)
                     {
                         logger.LogError(ex, $"Failed to increase stock in WooCommerce for product {item}.");
+                        throw;
                     }
                 }
 

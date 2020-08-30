@@ -43,7 +43,7 @@ namespace InvoiceNinjaToWooCommerceSynchronizer
                     {
                         await productRepository
                             .AdjustStockQuantity(
-                                item.ArticleId, 
+                                item.ArticleId,
                                 quantityAdjustment: -item.Quantity);
                     }
                     catch (Exception ex)
@@ -67,8 +67,8 @@ namespace InvoiceNinjaToWooCommerceSynchronizer
 
         [FunctionName("InvoiceDeleted")]
         public async Task<IActionResult> InvoiceDeleted(
-                    [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest request,
-                    ILogger logger)
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest request,
+            ILogger logger)
         {
             try
             {
